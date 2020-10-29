@@ -21,29 +21,49 @@ export default class Canvas extends React.Component {
       h: 750,
       count: 0
     }
+    for (let i =0; i< 5; i++) {
+      this.state.polygons.push(this.createRandPolygon())
+    }
   }
 
   componentDidMount () {
     this.setState({ ctx: this.ref.current.getContext('2d') }, () => {
       this.state.ctx.fillStyle = 'black'
       this.state.ctx.fillRect(0, 0, this.state.w, this.state.h)
-      this.drawPolygon()
-      setInterval(() => console.log(this.state.count), 1000)
+      this.animationLoop()
+      // this.state.polygons.map(polygon => polygon.draw(this.state.ctx))
       // setInterval(() => {
-      //   const x = Math.random() * this.state.w
-      //   const y = Math.random() * this.state.h
-      //   const r = Math.random() * this.state.w / 4
-      //   const points = Math.floor(Math.random() * 7) + 3
-      //   const polygon = new Polygon(x, y, r, points, { lineColor: 'white', color: scale(Math.random()), startAngle: Math.random() * 2 * Math.PI })
-      //   console.log(polygon)
-      //   this.state.ctx.fillStyle = 'rgba(0, 0, 0, 2%)'
+      //   this.state.ctx.fillStyle = 'black'
       //   this.state.ctx.fillRect(0, 0, this.state.w, this.state.h)
-      //   polygon.draw(this.state.ctx)
-      // }, 10)
+      //   this.state.polygons.map(polygon => {
+      //     polygon.move(0, 0, (Math.PI / 20))
+      //     polygon.draw(this.state.ctx)
+      //   })
+
+      // }, 1000)
     })
   }
 
-  drawPolygon = () => {
+  animationLoop = () => {
+    this.state.ctx.fillStyle = 'rgba(0, 0, 0, 50%)'
+    this.state.ctx.fillRect(0, 0, this.state.w, this.state.h)
+    this.state.polygons.map(polygon => {
+      polygon.move(0, 0)
+      polygon.draw(this.state.ctx)
+    })
+    requestAnimationFrame(this.animationLoop)
+  }
+
+  createRandPolygon = () => {
+    const x = Math.random() * this.state.w
+    const y = Math.random() * this.state.h
+    const r = Math.random() * this.state.w / 4
+    const points = Math.floor(Math.random() * 6) + 3
+    const rot = (Math.random() - 0.5) * (Math.PI / 12)
+    return new Polygon(x, y, r, points, rot, { lineColor: 'white', color: scale(Math.random()), startAngle: Math.random() * 2 * Math.PI })
+  }
+
+  drawRandPolygon = () => {
     const x = Math.random() * this.state.w
     const y = Math.random() * this.state.h
     const r = Math.random() * this.state.w / 4
