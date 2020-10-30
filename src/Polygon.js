@@ -1,9 +1,14 @@
 export default class Polygon {
-  constructor (xCenter, yCenter, radius, numOfPoints, rot, options) {
-    this.x = xCenter
-    this.y = yCenter
+  constructor (x, y, radius, numOfPoints, rot, options) {
+    this.x = x // x center of polyg0n
+    this.y = y // y center of polygon
     this.r = radius
     this.rot = rot
+
+    this.vX = options.vX || 0
+    this.vY = options.vY || 0
+    this.gravity = 0.05
+
     this.color = options.color || 'black'
     this.lineWidth = options.lineWidth || 2
     this.lineColor = options.lineColor || 'black'
@@ -36,9 +41,10 @@ export default class Polygon {
     ctx.stroke()
   }
 
-  move (x, y) {
-    this.x += x
-    this.y += y
+  move () {
+    this.vY += this.gravity
+    this.x += this.vX
+    this.y += this.vY
     this.radians = this.radians.slice().map(radian => (radian + this.rot) % (2 * Math.PI))
     this.points = this.radians.map(radian => {
       const x = this.x + (this.r * Math.cos(radian))
